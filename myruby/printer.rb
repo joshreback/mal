@@ -1,3 +1,5 @@
+require 'pry'
+
 def pr_str(mal_type)
   case mal_type.type
   when "MalList"

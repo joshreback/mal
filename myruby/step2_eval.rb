@@ -15,7 +15,7 @@ def eval_ast(ast, repl_env)
   when "MalSymbol"
     func = repl_env[ast.sym.to_sym]
     if func.nil?
-      raise UnrecognizedSymbol.new("'#{ast.sym.to_s}' not found.")
+      raise UnrecognizedSymbolError.new("'#{ast.sym.to_s}' not found.")
     end
     func
   when "MalList"
@@ -62,7 +62,7 @@ loop do
   begin
     print "user> "
     puts rep(gets.chomp)
-  rescue MalformedStringError, UnrecognizedSymbol => e
+  rescue MalformedStringError, UnrecognizedSymbolError => e
     puts e.message
   end
 end
