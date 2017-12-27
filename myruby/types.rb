@@ -31,3 +31,14 @@ class MalSymbol < MalType
     @sym = sym
   end
 end
+
+class MalAtom < MalType
+  attr_reader :value
+  def initialize(primitive)
+    @value = {
+      "nil": nil,
+      "false": false,
+      "true": true
+    }[primitive]
+  end
+end

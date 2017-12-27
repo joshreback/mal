@@ -4,8 +4,9 @@ class Env
   attr_accessor :data
   attr_reader :outer
 
-  def initialize(outer=nil)
-    @data = {}
+  def initialize(outer=nil, binds=[], exprs=[])
+    binds = binds.map { |binding| binding.sym.to_sym }
+    @data = Hash[binds.zip(exprs)]
     @outer = outer
   end
 
