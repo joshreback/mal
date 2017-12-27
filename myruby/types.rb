@@ -22,6 +22,22 @@ class MalNum < MalType
   def initialize(num)
     @num = num.to_i
   end
+
+  def +(other)
+    MalNum.new(self.num + other.num)
+  end
+
+  def -(other)
+    MalNum.new(self.num - other.num)
+  end
+
+  def *(other)
+    MalNum.new(self.num * other.num)
+  end
+
+  def /(other)
+    MalNum.new(self.num / other.num)
+  end
 end
 
 class MalSymbol < MalType

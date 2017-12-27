@@ -73,8 +73,8 @@ def EVAL(ast, repl_env)
     else
       evaled_list = eval_ast(ast, repl_env)
       op_fn = evaled_list.list[0]
-      op_fn_args = evaled_list.list[1..-1].map(&:num)
-      MalNum.new(op_fn.call(*op_fn_args))
+      op_fn_args = evaled_list.list[1..-1]
+      MalNum.new(op_fn.call(*op_fn_args).num)
     end
   else
     eval_ast(ast, repl_env)
