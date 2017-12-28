@@ -67,7 +67,7 @@ def read_atom(reader)
     MalNum.new(next_token)
   when /\A".*"\z/
     MalString.new(next_token)
-  when /\A<=|>=|<|>|=|\/|\*|\+|\*\*|[-0-9a-zA-Z!]+\z/
+  when /\A<=|>=|<|>|=|\/|\*|\+|\*\*|[-0-9a-zA-Z!?]+\z/
     MalSymbol.new(next_token)
   when ")"
     next_token

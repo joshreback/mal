@@ -40,9 +40,9 @@ def EVAL(ast, repl_env)
 
     # non-empty list
     if ast.list[0].type == "MalSymbol" && ast.list[0].sym == "do"
-      unevaled_list = ast.list[1]
+      unevaled_list = MalList.new(ast.list[1..-1])
       evaled_list = eval_ast(unevaled_list, repl_env)
-      evaled_list[-1]
+      evaled_list.list[-1]
     elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "if"
       cond = EVAL(ast.list[1], repl_env)
       if_branch, else_branch = ast.list[2], ast.list[3]
