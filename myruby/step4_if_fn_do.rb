@@ -2,14 +2,14 @@ require_relative "reader"
 require_relative "printer"
 require_relative "errors"
 require_relative "env"
+require_relative "core"
 require "pry"
 
 def setup_env()
   env = Env.new()
-  env.set('+', lambda { |a,b| a+b })
-  env.set('-', lambda { |a,b| a-b })
-  env.set('*', lambda { |a,b| a*b })
-  env.set('/', lambda { |a,b| a/b })
+  NS.each do |op, func|
+    env.set(op, func)
+  end
   return env
 end
 
@@ -46,20 +46,21 @@ def EVAL(ast, repl_env)
     elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "if"
       cond = EVAL(ast.list[1], repl_env)
       if_branch, else_branch = ast.list[2], ast.list[3]
-      if cond.value != nil && cond.value != false
+      if cond.value != "nil" && cond.value != "false"
         EVAL(if_branch, repl_env)
       else
-        else_branch ? EVAL(else_branch, repl_env) : else_branch
+        else_branch ? EVAL(else_branch, repl_env) : MalAtom.new("nil")
       end
     elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "fn*"
       lambda { |*exprs|
         exprs = exprs.to_a
-        binds = [ast.list[1]]
+        binds = ast.list[1].list
         new_env = Env.new(repl_env, binds, exprs)
-        EVAL(ast.list[2], new_env)
+        user_defined_func = ast.list[-1]
+        EVAL(user_defined_func, new_env)
       }
     elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "def!"
-      repl_env.set(ast.list[1].sym,
+      repl_env.set(ast.list[1].value,
         EVAL(ast.list[2], repl_env)
       )
     elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "let*"
@@ -74,15 +75,20 @@ def EVAL(ast, repl_env)
       evaled_list = eval_ast(ast, repl_env)
       op_fn = evaled_list.list[0]
       op_fn_args = evaled_list.list[1..-1]
-      MalNum.new(op_fn.call(*op_fn_args).num)
+      ret = op_fn.call(*op_fn_args)
+      if ret.is_a? Proc
+        ret
+      else
+        MalType.from_value(ret.value)
+      end
     end
   else
     eval_ast(ast, repl_env)
   end
 end
 
-def PRINT(str)
-  pr_str(str)
+def PRINT(ast)
+  pr_str(ast)
 end
 
 def rep(str, repl_env)

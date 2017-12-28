@@ -61,11 +61,13 @@ def read_atom(reader)
   # NOTE: for now, just numbers & symbols
   next_token = reader.next
   case next_token
-  when /nil|true|false/
+  when /\Anil|true|false\z/
     MalAtom.new(next_token)
-  when /-?[0-9]+/
+  when /\A-?[0-9]+\z/
     MalNum.new(next_token)
-  when /\/|-|\*|\+|\*\*|[a-zA-Z]+/
+  when /\A".*"\z/
+    MalString.new(next_token)
+  when /\A<=|>=|<|>|=|\/|\*|\+|\*\*|[-0-9a-zA-Z!]+\z/
     MalSymbol.new(next_token)
   when ")"
     next_token
