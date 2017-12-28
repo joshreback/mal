@@ -1,7 +1,7 @@
 require 'pry'
 
 def pr_str(mal_type)
-  if mal_type.is_a? Proc
+  if mal_type.is_a? UserDefinedFunc
     return "#<function>"
   end
 
