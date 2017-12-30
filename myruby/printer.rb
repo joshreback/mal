@@ -1,6 +1,10 @@
 require 'pry'
 
 def pr_str(mal_type)
+  if mal_type.nil?
+    return ""
+  end
+
   if mal_type.is_a? UserDefinedFunc or mal_type.is_a? Proc
     return "#<function>"
   end

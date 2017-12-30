@@ -27,7 +27,8 @@ end
 def read_str(str)
   tokens = tokenizer(str)
   reader = Reader.new(tokens)
-  read_form(reader)
+  form = read_form(reader)
+  form
 end
 
 def tokenizer(raw_string)
@@ -67,7 +68,7 @@ def read_atom(reader)
     MalNum.new(next_token)
   when /\A".*"\z/
     MalString.new(next_token)
-  when /\A<=|>=|<|>|=|\/|\*|\+|\*\*|[-0-9a-zA-Z!?]+\z/
+  when /\A<=|>=|<|>|=|\/|\*|\+|\*\*\z|\A[-0-9a-zA-Z!?]+\z/
     MalSymbol.new(next_token)
   when ")"
     next_token
