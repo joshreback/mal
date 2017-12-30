@@ -13,6 +13,7 @@ def setup_env()
     env.set(op, func)
   end
   env.set("eval", lambda { |ast| EVAL(ast, env)} )
+  env.set("*ARGV*", MalList.new(ARGV))
   return env
 end
 
@@ -57,14 +58,19 @@ def EVAL(ast, repl_env)
         ast = if cond.value != "nil" && cond.value != "false"
           if_branch
         else
-          else_branch || MalAtom.new("nil")
+          else_branch || MalBool.new("nil")
         end
       elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "fn*"
         return UserDefinedFunc.new(
           ast.list[2],
           ast.list[1].list,
           repl_env,
-          ast.list[-1]
+          lambda { |*exprs|
+            binds = ast.list[1].list
+            new_env = Env.new(repl_env, binds, exprs)
+            user_defined_func = ast.list[-1]
+            EVAL(user_defined_func, new_env)
+          }
         )
       elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "def!"
         repl_env.set(ast.list[1].value,
@@ -91,10 +97,7 @@ def EVAL(ast, repl_env)
           ast = op_fn.ast
         else
           ret = op_fn.call(*op_fn_args)
-          if ret.is_a? UserDefinedFunc
-            return ret
-          end
-          return MalType.from_value(ret.value)
+          return ret
         end
       end
     else

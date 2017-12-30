@@ -6,7 +6,7 @@ class MalType
       elsif value.is_a?(Array)
         return MalList.new(value)
       elsif ["nil", "false", "true"].include?(value)
-        return MalAtom.new(value)
+        return MalBool.new(value)
       else
         return MalSymbol.new(value)
       end
@@ -79,19 +79,19 @@ class MalNum < MalType
   end
 
   def >=(other)
-    MalAtom.new((num >= other.num).to_s)
+    MalBool.new((num >= other.num).to_s)
   end
 
   def >(other)
-    MalAtom.new((num > other.num).to_s)
+    MalBool.new((num > other.num).to_s)
   end
 
   def <=(other)
-    MalAtom.new((num <= other.num).to_s)
+    MalBool.new((num <= other.num).to_s)
   end
 
   def <(other)
-    MalAtom.new((num < other.num).to_s)
+    MalBool.new((num < other.num).to_s)
   end
 
   def mal_eq(other)
@@ -115,7 +115,7 @@ class MalSymbol < MalType
   end
 end
 
-class MalAtom < MalType
+class MalBool < MalType
   attr_reader :value
 
   def initialize(value)
@@ -123,7 +123,7 @@ class MalAtom < MalType
   end
 
   def mal_eq(other)
-    other.type == "MalAtom" && value == other.value
+    other.type == "MalBool" && value == other.value
   end
 end
 

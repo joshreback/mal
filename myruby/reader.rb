@@ -62,7 +62,7 @@ def read_atom(reader)
   next_token = reader.next
   case next_token
   when /\Anil|true|false\z/
-    MalAtom.new(next_token)
+    MalBool.new(next_token)
   when /\A-?[0-9]+\z/
     MalNum.new(next_token)
   when /\A".*"\z/
