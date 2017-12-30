@@ -18,6 +18,14 @@ class MalType
   end
 end
 
+class MalAtom < MalType
+  attr_accessor :value
+
+  def initialize(value)
+    @value = value
+  end
+end
+
 class MalList < MalType
   attr_reader :list
 
@@ -123,7 +131,7 @@ class MalString < MalType
   attr_reader :value
 
   def initialize(value)
-    @value = value
+    @value = value.gsub("\"", "")
   end
 
   def mal_eq(other)

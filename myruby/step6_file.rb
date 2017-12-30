@@ -63,7 +63,8 @@ def EVAL(ast, repl_env)
         return UserDefinedFunc.new(
           ast.list[2],
           ast.list[1].list,
-          repl_env
+          repl_env,
+          ast.list[-1]
         )
       elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "def!"
         repl_env.set(ast.list[1].value,
@@ -90,6 +91,9 @@ def EVAL(ast, repl_env)
           ast = op_fn.ast
         else
           ret = op_fn.call(*op_fn_args)
+          if ret.is_a? UserDefinedFunc
+            return ret
+          end
           return MalType.from_value(ret.value)
         end
       end
@@ -112,6 +116,7 @@ def rep(str, repl_env)
 end
 
 env = setup_env()
+rep("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))", env)
 
 loop do
   begin
