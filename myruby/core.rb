@@ -38,5 +38,8 @@ NS = {
       atom.value = func.call(*func_args)
     end
     atom.value
-  end
+  end,
+
+  'cons': lambda { |arg, mal_list| MalList.new([arg] + mal_list.list) },
+  'concat': lambda { |*mal_lists| MalList.new(mal_lists.map(&:list).reduce([], :+)) }
 }
