@@ -42,6 +42,18 @@ def read_form(reader)
   when "("
     reader.next  # consume the "(" token
     read_list(reader)
+  when "'"
+    reader.next
+    MalList.new([MalSymbol.new("quote"), read_form(reader)])
+  when "`"
+    reader.next
+    MalList.new([MalSymbol.new("quasiquote"), read_form(reader)])
+  when "~"
+    reader.next
+    MalList.new([MalSymbol.new("unquote"), read_form(reader)])
+  when "~@"
+    reader.next
+    MalList.new([MalSymbol.new("splice-unquote"), read_form(reader)])
   else
     read_atom(reader)
   end

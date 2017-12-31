@@ -177,6 +177,7 @@ end
 
 env = setup_env()
 rep("(def! load-file (fn* (f) (eval (read-string (str \"(do \" (slurp f) \")\")))))", env)
+rep("(def! not (fn* (a) (if a false true)))", env)
 
 loop do
   begin
