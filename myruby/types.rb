@@ -138,3 +138,5 @@ class MalString < MalType
     other.type == "MalString" && value == other.value
   end
 end
+
+class MalException < StandardError; end

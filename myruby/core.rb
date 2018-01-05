@@ -7,7 +7,7 @@ NS = {
   '*': lambda { |a,b| a*b },
   '/': lambda { |a,b| a/b },
 
-  'prn': lambda { |ast| puts pr_str(ast); return MalAtom.new("nil") },
+  'prn': lambda { |*args| puts args.map { |a| pr_str(a) }.join(" "); return MalAtom.new("nil") },
   'str': lambda { |*args| MalString.new(args.map { |a| pr_str(a) }.join("")) },
   'list': lambda { |*elems| MalList.new(elems) },
   'list?': lambda { |mal_type| MalBool.new((mal_type.type == "MalList").to_s) },
@@ -41,9 +41,16 @@ NS = {
   end,
 
   'cons': lambda { |arg, mal_list| MalList.new([arg] + mal_list.list) },
-  'concat': lambda { |*mal_lists| MalList.new(mal_lists.map(&:list).reduce([], :+)) }
+  'concat': lambda { |*mal_lists| MalList.new(mal_lists.map(&:list).reduce([], :+)) },
+  'throw': lambda { |exception| throw MalException.new(exception) },
+  'apply': lambda { |func, *args, mal_list|
+    concat_list = NS[:concat].call(MalList.new(args), mal_list)
+    func.call(*concat_list.list)
+  },
+  'map': lambda { |func, list| new_list = list.map { |elem| func.call(elem)}; MalList.new(new_list) },
 
-
-
-
+  'nil?': lambda { |arg| MalBool.new(arg.is_a?(MalType) && arg.type == "MalBool" && arg.value == "nil") },
+  'true?': lambda { |arg| MalBool.new(arg.is_a?(MalType) && arg.type == "MalBool" && arg.value == "true") },
+  'false?': lambda { |arg| MalBool.new(arg.is_a?(MalType) && arg.type == "MalBool" && arg.value == "false") },
+  'symbol?': lambda { |arg| MalBool.new(arg.is_a?(MalType) && arg.type == "MalSymbol") }
 }

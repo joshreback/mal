@@ -15,7 +15,7 @@ def pr_str(mal_type)
   when "MalString"
     mal_type.value.dump
   when "MalAtom"
-    "(atom #{pr_str(mal_type.value)})"
+    "(atom #{mal_type.value})"
   else
     mal_type.value
   end
