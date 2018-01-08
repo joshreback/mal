@@ -28,7 +28,7 @@ class Env
     env = self.find(key)
 
     if env.nil?
-      raise KeyNotFoundError.new("#{key} not found.")
+      raise KeyNotFoundError.new("'#{key}' not found")
     else
       return env.data[key.to_sym]
     end

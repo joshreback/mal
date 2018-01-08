@@ -105,15 +105,15 @@ def EVAL(ast, repl_env)
       elsif ast.list[0].type == "MalSymbol" && ast.list[0].sym == "quasiquote"
         ast = quasiquote(ast.list[1])
       elsif (ast.list[0].type == "MalSymbol" && ast.list[0].sym == "try*" &&
-        !ast.list[2].nil? && ast.list[2].type == "MalList" && ast.list[2][0].type == "MalSymbol" &&
-        ast.list[2][0].sym == "catch*")
+        !ast.list[2].nil? && ast.list[2].type == "MalList" && ast.list[2].list[0].type == "MalSymbol" &&
+        ast.list[2].list[0].sym == "catch*")
 
         begin
-          EVAL(ast.list[1], repl_env)
-        rescue MalException => e
+          return EVAL(ast.list[1], repl_env)
+        rescue Exception => e
           env = Env.new(repl_env)
-          env.set(ast.list[2][1].value, MalString.new(e.message))
-          EVAL(ast.list[2][2], env)
+          env.set(ast.list[2].list[1].value, MalString.new(e.message))
+          return EVAL(ast.list[2].list[2], env)
         end
 
       else
